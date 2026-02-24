@@ -1,6 +1,6 @@
 import random
 
-def afficher_regles():   #here we are printing all the rules for the game
+def afficher_regles():
     print("Bienvenue dans le jeu de l'aventure textuelle !")
     print("Vous explorez un donjon mystérieux à la recherche d'un trésor caché.")
     print("Faites attention aux pièges et aux monstres !")
@@ -9,36 +9,36 @@ def afficher_regles():   #here we are printing all the rules for the game
     print("Soyez stratégique dans vos choix pour survivre jusqu'à la fin !")
     print("Niveaux disponibles : 1 (facile), 2 (moyen), 3 (difficile)")
 
-def choisir_niveau():   #this function is for the player to choose a level
-    while True:    #this is a loop until the player chooses a valid level (1,2 or 3)
+def choisir_niveau():
+    while True:
         try:
-            niveau = int(input("Choisissez un niveau (1-3) : "))  #asking for the level (the user chooses it)
-            if niveau in [1, 2, 3]:   #checking for the level if its valid
-                return niveau   #returning the level that the user has chosen
+            niveau = int(input("Choisissez un niveau (1-3) : "))  
+            if niveau in [1, 2, 3]: 
+                return niveau   
             else:
-                print("Veuillez entrer un niveau valide (1, 2 ou 3).")   #if the level set by the user isnt valid then ask him again
-        except ValueError:   #if its not a number
-            print("Entrée invalide. Veuillez entrer un nombre.")   #ask the user to choose a number for the level
+                print("Veuillez entrer un niveau valide (1, 2 ou 3).")  
+        except ValueError:
+            print("Entrée invalide. Veuillez entrer un nombre.")
 
-def choix_direction():   #here the player chooses where to go
-    return input("Choisissez une direction (gauche/droite/tout droit) : ").strip().lower()   #here the player gives us the direction, and once he gave us the direction, the strip is going to clear all the blank spaces and lower is going to make the direction in lowercases. For example Gauche =gauche
+def choix_direction():
+    return input("Choisissez une direction (gauche/droite/tout droit) : ").strip().lower()
 
-def rencontre_aleatoire(niveau):   #this is the function to return a random event based on the level that the player choses   
-    evenements_probables = {   #dictionnary fro each level with the possible events
+def rencontre_aleatoire(niveau):  
+    evenements_probables = {
         1: ["monstre", "piège", "rien", "trésor", "potion", "marchand", "coffre", "rien"],
         2: ["monstre", "piège", "rien", "trésor", "potion", "marchand", "coffre", "araignée"],
         3: ["monstre", "piège", "poison", "araignée", "trésor", "potion", "marchand", "coffre","Géant Goblin"]
     }
-    return random.choice(evenements_probables[niveau])   #retunr a random event based on the level chosen
+    return random.choice(evenements_probables[niveau])
 
-def gerer_evenement(evenement, joueur, niveau):  #this is the function that handles every event, and what happens in each event
+def gerer_evenement(evenement, joueur, niveau): 
     if evenement == "monstre":
         print("Un monstre apparaît !")
-        chance = 0.7 - (niveau * 0.1)   #if the level is high than you have a lower chance to of winning
+        chance = 0.7 - (niveau * 0.1)
         if random.random() < chance:
             print("Vous avez vaincu le monstre !")
         else:
-            degats = 10 + niveau * 5  #the damage increases if the level chosen is higher
+            degats = 10 + niveau * 5 
             print(f"Le monstre vous a blessé ! Vous perdez {degats} points de vie.")
             joueur["vie"] -= degats
     elif evenement == "piège":
@@ -58,7 +58,7 @@ def gerer_evenement(evenement, joueur, niveau):  #this is the function that hand
         joueur["trésor"] = True 
     elif evenement == "potion":
         print("Vous trouvez une potion de soin !")
-        joueur["inventaire"].append("potion") #add a potion to the iventory list for the player
+        joueur["inventaire"].append("potion")
     elif evenement == "marchand":
         print("Vous rencontrez un marchand mystérieux. Il vous vend une potion pour 5 points de vie.")
         if joueur["vie"] > 5:
@@ -68,54 +68,54 @@ def gerer_evenement(evenement, joueur, niveau):  #this is the function that hand
         else:
             print("Vous n'avez pas assez de vie pour acheter quoi que ce soit.")
     elif evenement == "araignée":
-        degats = 90 - (niveau * 15)  # the higher the level the less you loose life
+        degats = 90 - (niveau * 15)
         print(f"Vous tombez sur une araignée géante qui vous attaque. Vous perdez {degats} points de vie !")
         joueur["vie"] -= degats
     elif evenement == "coffre":
         print("Vous découvrez un coffre !")
-        if random.random() < 0.5:  #50% chance of getting the magic sword
+        if random.random() < 0.5:
             print("Le coffre contenait une épée magique qui vous protégera mieux des monstres !")
-            joueur["inventaire"].append("épée magique") #give the player the swords in his inventory
+            joueur["inventaire"].append("épée magique")
         else:
             print("Le coffre était vide...")
 
-def afficher_inventaire(joueur): #funtion to show the players inventory
+def afficher_inventaire(joueur):
     print("Inventaire :", joueur["inventaire"])
 
 def utiliser_potion(joueur):
-    if "potion" in joueur["inventaire"]:  #function to use the potion in his inventory
+    if "potion" in joueur["inventaire"]: 
         print("Vous utilisez une potion et regagnez 10 points de vie.")
         joueur["vie"] += 10
-        joueur["inventaire"].remove("potion") #if player used a potion, then the potion is removed from his invetonry
+        joueur["inventaire"].remove("potion")
     else:
         print("Vous n'avez pas de potion !")
 
-def jeu_aventure():  #main function to run the game
-    joueur = {"vie": 100, "trésor": False, "inventaire": []} #initialize the players stats
-    afficher_regles()  #prints the rules of the game
-    niveau = choisir_niveau() # let the player choose a difficulty
+def jeu_aventure():
+    joueur = {"vie": 100, "trésor": False, "inventaire": []}
+    afficher_regles()
+    niveau = choisir_niveau()
 
-    while joueur["vie"] > 0 and not joueur["trésor"]: # loop if player have more than 0 lives and if the treasure hasn't been found
-        direction = choix_direction() #ask for the direction
-        if direction == "inventaire": #show players inventory
+    while joueur["vie"] > 0 and not joueur["trésor"]:
+        direction = choix_direction()
+        if direction == "inventaire":
             afficher_inventaire(joueur)
             continue
-        elif direction == "potion": #use a potion 
+        elif direction == "potion":
             utiliser_potion(joueur) 
             continue
-        elif direction not in ["g", "d", "t"]: #if the direction isn't g,d or t then the direction is invalid
+        elif direction not in ["g", "d", "t"]: 
             print("Direction invalide. Essayez encore.")
             continue
         
-        evenement = rencontre_aleatoire(niveau) #random event occurs depending on the level
-        gerer_evenement(evenement, joueur, niveau)  #handle the event
+        evenement = rencontre_aleatoire(niveau)
+        gerer_evenement(evenement, joueur, niveau)
         
-        print(f"Points de vie restants : {joueur['vie']}")  #print the players health
+        print(f"Points de vie restants : {joueur['vie']}")
         
-    if joueur["vie"] <= 0:  #game ends here if the player has less than 0 life
+    if joueur["vie"] <= 0:
         print("Vous avez perdu ! Votre aventure s'arrête ici.")
-    elif joueur["trésor"]: #game ends if the treasure is found
+    elif joueur["trésor"]:
         print("Bravo ! Vous avez gagné !")
 
-if __name__ == "__main__":  #only runs this scripts if its executed directly
-    jeu_aventure()  #start of the game
+if __name__ == "__main__":
+    jeu_aventure()
